@@ -280,6 +280,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 202306667}
   speed: 10
+  animator: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -357,8 +358,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 1.66, y: 1.6, z: -21.1}
+  m_LocalScale: {x: 1, y: 1, z: -0.44}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -389,10 +390,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 596366952}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4835ac1498c0dc84ca9c9150e549e013, type: 3}
+  m_Script: {fileID: 11500000, guid: 7aeee7cb2c64ced409b07ae93bf23aa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backgound: {fileID: 1888558787}
+  camera: {fileID: 519420028}
+  player: {fileID: 202306666}
 --- !u!4 &596366954
 Transform:
   m_ObjectHideFlags: 0
@@ -401,7 +403,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 596366952}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.5505748, y: -0.4538219, z: -5.6058016}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -3592,7 +3594,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 4
+  m_Constraints: 7
 --- !u!1 &1241293117
 GameObject:
   m_ObjectHideFlags: 0
