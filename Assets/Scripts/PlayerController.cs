@@ -3,10 +3,19 @@ using UnityEngine;
 [RequireComponent(typeof(Animator), typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour {
 
+    [Header("Jhon")]
     public SpriteRenderer spriteRenderer;
+    [Header("Velocidad y Fuerza")]
     [SerializeField]
     [Range(1,10)]
     private float speed;
+    [SerializeField]
+    [Range(300,500)]
+    [Min(300)]
+    private float jumpForce;
+
+    [SerializeField]
+    private bool isJump;
 
 
     private Rigidbody2D rigidbody;
@@ -31,15 +40,35 @@ public class PlayerController : MonoBehaviour {
 
         if (horizontal < 0.0f)
             Flip(true);
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            if(!isJump)
+                Jump();
+        }
     }
 
     private void Flip(bool status)
     {
         spriteRenderer.flipX = status;
     }
+    private void Jump()
+    {
+        rigidbody.AddForce(Vector2.up * jumpForce);
+        isJump = true;
+        Debug.Log("saltando sin parar....");
+    }
 
     private void FixedUpdate() {
 
         rigidbody.velocity = new Vector2(horizontal * speed, rigidbody.velocity.y);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        isJump = !(collision.collider.tag == "Floor");
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log(collision.name);
     }
 }
