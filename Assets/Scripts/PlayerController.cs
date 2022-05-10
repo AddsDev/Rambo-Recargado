@@ -1,4 +1,8 @@
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using System;
+using System.Collections;
 
 [RequireComponent(typeof(Animator), typeof(Rigidbody2D))]
 public class PlayerController : MonoBehaviour {
@@ -17,34 +21,22 @@ public class PlayerController : MonoBehaviour {
     [SerializeField]
     private bool isJump;
 
-
-    private Rigidbody2D rigidbody;
-    private float horizontal;
     [Header("Animaciones")]
     [SerializeField]
     private Animator animator;
+    [Header("Hub personaje")]
+    [SerializeField]
+    private GameObject personHub;
+
+    private Rigidbody2D rigidbody;
+    private float horizontal;
 
     private void Start() {
         rigidbody = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
     }
     private void Update() {
-        horizontal = Input.GetAxis("Horizontal");
-
-        //var vector = horizontal > 0f ? new Vector2(1f, 0f) : new Vector2(-1f, 0f);
-
-        animator.SetBool("isRun", horizontal != 0.0f);
-
-        if (horizontal > 0.0f)
-            Flip(false);
-
-        if (horizontal < 0.0f)
-            Flip(true);
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            if(!isJump)
-                Jump();
-        }
+        
     }
 
     private void Flip(bool status)
@@ -55,12 +47,58 @@ public class PlayerController : MonoBehaviour {
     {
         rigidbody.AddForce(Vector2.up * jumpForce);
         isJump = true;
-        Debug.Log("saltando sin parar....");
+    }
+
+    private void setNameHub(string text){
+        personHub.GetComponentInChildren<TextMeshProUGUI>().SetText(text);
     }
 
     private void FixedUpdate() {
+        horizontal = Input.GetAxis("Horizontal");
 
-        rigidbody.velocity = new Vector2(horizontal * speed, rigidbody.velocity.y);
+
+        animator.SetBool("isRun", horizontal != 0.0f);
+
+        if (horizontal > 0.0f) Flip(false);
+        if (horizontal < 0.0f) Flip(true);
+
+        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            if(!isJump)
+                Jump();
+        }
+
+        Move();
+
+        setNameHub($"Vel: {Mathf.FloorToInt(rigidbody.velocity.x)} - {Mathf.FloorToInt(rigidbody.velocity.y)}\n{isJump}");
+    }
+
+    private void Move()
+    {
+        Debug.DrawRay(transform.position, Vector2.down * 1.4f, Color.green);
+
+        var hit2D = Physics2D.Raycast(transform.position, Vector2.down, 1.4f);
+        if (hit2D.collider != null && hit2D.collider.tag == "Floor") {
+            Debug.Log("Esta en piso");
+            rigidbody.velocity = new Vector2(horizontal * speed, rigidbody.velocity.y);
+            return;
+        }
+        Debug.Log("Saltando?");
+
+        Slow(speed);
+
+
+
+    }
+
+    private IEnumerator Slow(float tempSpeed)
+    {
+        while (isJump)
+        {
+            tempSpeed -= 2;
+            rigidbody.velocity = new Vector2(horizontal * tempSpeed, rigidbody.velocity.y);
+            yield return new WaitForSeconds(.1f);
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
