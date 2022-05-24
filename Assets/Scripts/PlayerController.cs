@@ -5,7 +5,7 @@ using System;
 using System.Collections;
 
 [RequireComponent(typeof(Animator), typeof(Rigidbody2D))]
-public class PlayerController : MonoBehaviour {
+public class PlayerController : MonoBehaviour, IMove {
 
     [Header("Jhon")]
     public SpriteRenderer spriteRenderer;
@@ -30,6 +30,10 @@ public class PlayerController : MonoBehaviour {
 
     private Rigidbody2D rigidbody;
     private float horizontal;
+
+    [Header("Image Hub personaje")]
+    [SerializeField]
+    private Image imgHub;
 
     private void Start() {
         rigidbody = GetComponent<Rigidbody2D>();
@@ -73,24 +77,6 @@ public class PlayerController : MonoBehaviour {
         setNameHub($"Vel: {Mathf.FloorToInt(rigidbody.velocity.x)} - {Mathf.FloorToInt(rigidbody.velocity.y)}\n{isJump}");
     }
 
-    private void Move()
-    {
-        Debug.DrawRay(transform.position, Vector2.down * 1.4f, Color.green);
-
-        var hit2D = Physics2D.Raycast(transform.position, Vector2.down, 1.4f);
-        if (hit2D.collider != null && hit2D.collider.tag == "Floor") {
-            Debug.Log("Esta en piso");
-            rigidbody.velocity = new Vector2(horizontal * speed, rigidbody.velocity.y);
-            return;
-        }
-        Debug.Log("Saltando?");
-
-        Slow(speed);
-
-
-
-    }
-
     private IEnumerator Slow(float tempSpeed)
     {
         while (isJump)
@@ -107,6 +93,29 @@ public class PlayerController : MonoBehaviour {
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collision.tag != "Ammo")
+            return;
+
+        var spriteTemp = collision.gameObject.GetComponent<SpriteRenderer>();
         Debug.Log(collision.name);
+        imgHub.overrideSprite = spriteTemp.sprite;
+        Destroy(collision.gameObject);
+        Debug.Log(collision.name);
+    }
+
+    public void Move()
+    {
+        Debug.DrawRay(transform.position, Vector2.down * 1.4f, Color.green);
+
+        var hit2D = Physics2D.Raycast(transform.position, Vector2.down, 1.4f);
+        if (hit2D.collider != null && hit2D.collider.tag == "Floor")
+        {
+            Debug.Log("Esta en piso");
+            rigidbody.velocity = new Vector2(horizontal * speed, rigidbody.velocity.y);
+            return;
+        }
+        Debug.Log("Saltando?");
+
+        Slow(speed);
     }
 }
